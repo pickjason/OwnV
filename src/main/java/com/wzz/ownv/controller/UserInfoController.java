@@ -44,7 +44,7 @@ public class UserInfoController {
           try {
           if (redis!=null){
               userInfo= JSON.parseObject(redis, UserInfo.class);
-                  pass=Md5Util.checkMd5(userDto.getPassword(),userInfo.getUserPassword());
+              pass=Md5Util.checkMd5(userDto.getPassword(),userInfo.getUserPassword());
           }else {
               userInfo = iUserInfoService.getUserInfoByAccount(userDto.getAccount());
               jedis.set(userDto.getAccount(), JSON.toJSONString(userInfo));
@@ -57,6 +57,7 @@ public class UserInfoController {
               jedis.close();
           }
           if (pass){
+              userInfo.setUserPassword(null);
               return new Result("success",userInfo,200);
           }else {
               return new Result("failed check you account and password",202);
@@ -101,20 +102,16 @@ public class UserInfoController {
 
    @GetMapping("/sendMessage")
     public Result sendMessage(@RequestParam("phone") String phone){
-       int v = (int) Math.random() * (8000) + 1000;
        Jedis jedis = RedisUtil.getJedis();
        String code = jedis.get(phone);
        if (code!=null){
            return new Result("success",code,200);
        }else {
+           int v = (int)( Math.random() * (8000) + 1000);
            jedis.set(phone,v+"");
            jedis.expire(phone,300);
            jedis.close();
            return new Result("success",v,200);
        }
-
-
    }
-
-
 }
