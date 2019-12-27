@@ -1,0 +1,18 @@
+server:
+  port: 9797
+#spring 部分的配置
+spring:
+  application:
+    name: ownv
+  #数据库的配置
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: wzz1997
+    url: jdbc:mysql://localhost:3306/ownv?characterEncoding=utf8&useSSL=false&serverTimezone=UTC&rewriteBatchedStatements=true
+#mybatis扫描配置
+mybatis:
+  config-location: classpath:mybatis-config.xml
+  mapper-locations: classpath:mapper/*.xml
+
+mybatis-pulas:
