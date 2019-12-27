@@ -29,7 +29,7 @@
         <appender-ref ref="dailyfile"/>
     </root>
 
-    <logger name="com.wzz.eat.map" level="DEBUG" />
+    <logger name="com.wzz.eat.mapper" level="DEBUG" />
     <logger name="org.springframework" level="DEBUG"/>
     <logger name="com.ctrip" level="DEBUG"/>
 </configuration>

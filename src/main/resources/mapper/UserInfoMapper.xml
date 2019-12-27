@@ -19,7 +19,7 @@
         user_id, user_nickname, user_account, user_password, user_phone, user_gender, user_birthday, create_time
     </sql>
     <select id="getUserInfoByAccount" resultType="com.wzz.ownv.entity.UserInfo">
-       select * from user_info where account =#{account}
+       select * from user_info where user_account =#{account}
     </select>
 
 </mapper>

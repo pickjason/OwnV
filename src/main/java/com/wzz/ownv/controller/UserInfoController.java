@@ -1,5 +1,6 @@
 package com.wzz.ownv.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.wzz.ownv.common.exception.CommonException;
 import com.wzz.ownv.common.result.Result;
 import com.wzz.ownv.common.utils.Md5Util;
@@ -10,10 +11,7 @@ import com.wzz.ownv.service.IUserInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
 
 import java.io.UnsupportedEncodingException;
@@ -39,32 +37,43 @@ public class UserInfoController {
    @PostMapping("/login")
     public Result login(@RequestBody UserDto userDto){
        boolean pass=false;
-
+       UserInfo userInfo=null;
+       Jedis jedis = RedisUtil.getJedis();
       if (userDto.getAccount()!=null){
-          Jedis jedis = RedisUtil.getJedis();
           String redis = jedis.get(userDto.getAccount());
           try {
           if (redis!=null){
-                  pass=Md5Util.checkMd5(userDto.getPassword(),redis);
+              userInfo= JSON.parseObject(redis, UserInfo.class);
+                  pass=Md5Util.checkMd5(userDto.getPassword(),userInfo.getUserPassword());
           }else {
-              UserInfo userInfoByAccount = iUserInfoService.getUserInfoByAccount(userDto.getAccount());
-              jedis.set(userDto.getAccount(),userInfoByAccount.getUserPassword());
-              pass=Md5Util.checkMd5(userDto.getPassword(),userInfoByAccount.getUserPassword());
+              userInfo = iUserInfoService.getUserInfoByAccount(userDto.getAccount());
+              jedis.set(userDto.getAccount(), JSON.toJSONString(userInfo));
+              pass=Md5Util.checkMd5(userDto.getPassword(),userInfo.getUserPassword());
           } } catch (NoSuchAlgorithmException e) {
               e.printStackTrace();
           } catch (UnsupportedEncodingException e) {
               e.printStackTrace();
+          }finally {
+              jedis.close();
           }
           if (pass){
-              return new Result("success",userDto.getAccount(),200);
+              return new Result("success",userInfo,200);
           }else {
               return new Result("failed check you account and password",202);
           }
+      }else {
+          String code = jedis.get(userDto.getPhone());
+          if (code==null){
+              return new Result("The verification code has expired",401);
+          }else {
+              if (code.equals(userDto.getMsgCode())){
+               return new Result("success",200);
+              }else {
+                  return new Result("The verification code has expired ",401);
+              }
+
+          }
       }
-
-
-
-    return new Result("success",200);
     }
 
   @PostMapping("/register")
@@ -88,6 +97,23 @@ public class UserInfoController {
            throw CommonException.create(CommonException.ErrorType.ILLEGAL_ARGMENT,"检查你的参数好吗？");
        }
        return new Result("success",200);
+   }
+
+   @GetMapping("/sendMessage")
+    public Result sendMessage(@RequestParam("phone") String phone){
+       int v = (int) Math.random() * (8000) + 1000;
+       Jedis jedis = RedisUtil.getJedis();
+       String code = jedis.get(phone);
+       if (code!=null){
+           return new Result("success",code,200);
+       }else {
+           jedis.set(phone,v+"");
+           jedis.expire(phone,300);
+           jedis.close();
+           return new Result("success",v,200);
+       }
+
+
    }
 
 

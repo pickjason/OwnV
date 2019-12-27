@@ -2,7 +2,6 @@ package com.wzz.ownv.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wzz.ownv.entity.UserInfo;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 /**
@@ -13,7 +12,6 @@ import org.apache.ibatis.annotations.Param;
  * @author jobob
  * @since 2019-12-26
  */
-@Mapper
 public interface UserInfoMapper extends BaseMapper<UserInfo> {
 
     UserInfo getUserInfoByAccount(@Param("account") String account);

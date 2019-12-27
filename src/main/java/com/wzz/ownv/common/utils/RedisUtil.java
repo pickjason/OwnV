@@ -16,11 +16,11 @@ import redis.clients.jedis.JedisPoolConfig;
 @Component
 public class RedisUtil {
     //redis连接的地址
-    private static String IP_CONFIG="10.1.240.172";
+    private static String IP_CONFIG="127.0.0.1";
     //redis的端口
     private static int PORT =6379;
     //redis的密码
-    private static String PASSWORD="";
+   // private static String PASSWORD="";
     //redis实例最大连接数
     private static int MAX_ACTIVE=8;
     //jedis最大空闲实例
@@ -53,7 +53,7 @@ public class RedisUtil {
             config.setMaxIdle(MAX_IDLE);
             config.setMaxWaitMillis(MAX_WAIT);
             config.setTestOnBorrow(TEST_ON_BORROW);
-            jedisPool = new JedisPool(config, IP_CONFIG, PORT, TIMEOUT,PASSWORD,DEFAULT_DATABASE);
+            jedisPool = new JedisPool(config, IP_CONFIG, PORT, TIMEOUT,null,DEFAULT_DATABASE);
 
         } catch (Exception e) {
 
