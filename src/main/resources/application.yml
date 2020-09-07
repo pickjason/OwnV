@@ -1,5 +1,7 @@
 server:
   port: 9797
+  servlet:
+    context-path: /ownv
 #spring 部分的配置
 spring:
   application:

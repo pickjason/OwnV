@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>Login/Registration</title>
+ <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+  <link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Open+Sans'>
+
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+  <p class="tip">OwnV 个人分享平台</p>
+<div class="cont">
+  <div class="form sign-in">
+    <h2>欢迎回来,</h2>
+    <label>
+      <span>Phone</span>
+      <input id ="Phone" type="email" />
+    </label>
+    <label>
+      <span>Password</span>
+      <input id ="Password" type="password" />
+    </label>
+    <p class="forgot-pass">忘记了你的密码?</p>
+    <button id="signin" type="button" class="submit">Sign In</button>
+    <button type="button" class="fb-btn">获取 <span>验证码</span></button>
+  </div>
+  <div class="sub-cont">
+    <div class="img">
+      <div class="img__text m--up">
+        <h2>第一次分享?</h2>
+        <p>注册并且发现有趣的人和事吧!</p>
+      </div>
+      <div class="img__text m--in">
+        <h2>已经是我的人?</h2>
+        <p>如果你已经是我的人, 快登录吧. 开始分享美好!</p>
+      </div>
+      <div class="img__btn">
+        <span class="m--up">Sign Up</span>
+        <span class="m--in">Sign In</span>
+      </div>
+    </div>
+    <div class="form sign-up">
+      <h2>有趣的人总会聚到一起,</h2>
+      <label>
+        <span>Name</span>
+        <input type="text" />
+      </label>
+      <label>
+        <span>Phone</span>
+        <input type="email" />
+      </label>
+      <label>
+        <span>Password</span>
+        <input type="password" />
+      </label>
+      <button type="button" class="submit">Sign Up</button>
+      <button type="button" class="fb-btn">获取 <span>验证码</span></button>
+    </div>
+  </div>
+</div>
+<script type="text/javascript">
+	document.getElementById('signin').addEventListener('click', function(){
+       var account =$("#Phone").val();
+       var password =$("#Password").val();	
+		let json = {
+            "phone":null,
+            "msgCode":null,
+			account: account,
+			password: password
+
+		}
+		$.ajax({
+           type: "POST",
+           url: "http://10.1.240.34:9797/ownv/user/login",
+           contentType: "application/json; charset=utf-8",
+           data: JSON.stringify(json), /*传给后端的数据格式json*/
+           dataType: "json",
+           crossDomain: true,
+           async: "false",
+           	/*后端返回的数据格式json*/
+           success: function(data){
+             window.location.replace("home.html")
+           },
+           error: function (message) {
+ 
+           }
+        });
+	
+	});
+</script>
+<a href="https://dribbble.com/shots/3306190-Login-Registration-form" target="_blank" class="icon-link">
+  <img src="http://icons.iconarchive.com/icons/uiconstock/socialmedia/256/Dribbble-icon.png">
+</a>
+<a href="https://twitter.com/NikolayTalanov" target="_blank" class="icon-link icon-link--twitter">
+  <img src="https://cdn1.iconfinder.com/data/icons/logotypes/32/twitter-128.png">
+</a>
+  
+    <script src="js/index.js"></script>
+
+</body>
+</html>

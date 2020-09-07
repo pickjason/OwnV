@@ -1,6 +1,5 @@
 package com.wzz.ownv.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Data;
 
@@ -20,8 +19,8 @@ public class UserInfo  {
     /**
      * 用户主键
      */
-    @TableId(value = "user_id", type = IdType.AUTO)
-    private Integer userId;
+    @TableId(value = "user_id")
+    private String userId;
 
     private String userNickname;
 

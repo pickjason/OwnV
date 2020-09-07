@@ -1,5 +1,6 @@
 package com.wzz.ownv.controller;
 
+
 import com.alibaba.fastjson.JSON;
 import com.wzz.ownv.common.exception.CommonException;
 import com.wzz.ownv.common.result.Result;
@@ -16,6 +17,7 @@ import redis.clients.jedis.Jedis;
 
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
+import java.util.UUID;
 
 
 /**
@@ -30,9 +32,6 @@ import java.security.NoSuchAlgorithmException;
 public class UserInfoController {
     @Autowired
     private IUserInfoService  iUserInfoService;
-
-
-
 
    @PostMapping("/login")
     public Result login(@RequestBody UserDto userDto){
@@ -58,19 +57,19 @@ public class UserInfoController {
           }
           if (pass){
               userInfo.setUserPassword(null);
-              return new Result("success",userInfo,200);
+              return new Result(200,"success",userInfo);
           }else {
-              return new Result("failed check you account and password",202);
+              return new Result(202,"failed check you account and password",null);
           }
       }else {
           String code = jedis.get(userDto.getPhone());
           if (code==null){
-              return new Result("The verification code has expired",401);
+              return new Result(401,"The verification code has expired",null);
           }else {
               if (code.equals(userDto.getMsgCode())){
-               return new Result("success",200);
+               return new Result(200,"success",null);
               }else {
-                  return new Result("The verification code has expired ",401);
+                  return new Result(401,"The verification code has expired ",null);
               }
 
           }
@@ -81,6 +80,9 @@ public class UserInfoController {
     public Result register(@RequestBody UserInfo userInfo){
        if (userInfo!=null) {
            try {
+               userInfo.setCreateTime(System.currentTimeMillis());
+               //32位uuid
+               userInfo.setUserId(UUID.randomUUID().toString().replace("-", ""));
             if(StringUtils.isNotBlank(userInfo.getUserPassword())){
                    String md5 = Md5Util.EncoderByMd5(userInfo.getUserPassword());
                     userInfo.setUserPassword(md5);
@@ -97,7 +99,7 @@ public class UserInfoController {
        }else {
            throw CommonException.create(CommonException.ErrorType.ILLEGAL_ARGMENT,"检查你的参数好吗？");
        }
-       return new Result("success",200);
+       return new Result(200,"success",null);
    }
 
    @GetMapping("/sendMessage")
@@ -105,13 +107,13 @@ public class UserInfoController {
        Jedis jedis = RedisUtil.getJedis();
        String code = jedis.get(phone);
        if (code!=null){
-           return new Result("success",code,200);
+           return new Result(200,"success",code);
        }else {
            int v = (int)( Math.random() * (8000) + 1000);
            jedis.set(phone,v+"");
            jedis.expire(phone,300);
            jedis.close();
-           return new Result("success",v,200);
+           return new Result(200,"success",v);
        }
    }
 }
