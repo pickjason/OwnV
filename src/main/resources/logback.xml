@@ -8,9 +8,9 @@
     </appender>
 
     <appender name="dailyfile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${work.dir}/main/logs/devcenter.log</file>
+        <file>/main/logs/ownv.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-            <FileNamePattern>${work.dir}/logs/demo.%i.log</FileNamePattern>
+            <FileNamePattern>/logs/ownv.%i.log</FileNamePattern>
             <minIndex>1</minIndex>
             <maxIndex>10</maxIndex>
         </rollingPolicy>
@@ -29,7 +29,7 @@
         <appender-ref ref="dailyfile"/>
     </root>
 
-    <logger name="com.wzz.eat.mapper" level="DEBUG" />
     <logger name="org.springframework" level="DEBUG"/>
+    <logger name="com.wzz.ownv.mapper" level="DEBUG"/>
     <logger name="com.ctrip" level="DEBUG"/>
 </configuration>

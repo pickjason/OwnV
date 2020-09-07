@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -34,7 +35,7 @@ public class UserInfoController {
     private IUserInfoService  iUserInfoService;
 
    @PostMapping("/login")
-    public Result login(@RequestBody UserDto userDto){
+    public Result login(@RequestBody UserDto userDto, HttpServletResponse httpServletResponse){
        boolean pass=false;
        UserInfo userInfo=null;
        Jedis jedis = RedisUtil.getJedis();
@@ -46,7 +47,6 @@ public class UserInfoController {
               pass=Md5Util.checkMd5(userDto.getPassword(),userInfo.getUserPassword());
           }else {
               userInfo = iUserInfoService.getUserInfoByAccount(userDto.getAccount());
-              jedis.set(userDto.getAccount(), JSON.toJSONString(userInfo));
               pass=Md5Util.checkMd5(userDto.getPassword(),userInfo.getUserPassword());
           } } catch (NoSuchAlgorithmException e) {
               e.printStackTrace();
@@ -56,6 +56,15 @@ public class UserInfoController {
               jedis.close();
           }
           if (pass){
+              String token =null;
+              try {
+                  token = Md5Util.EncoderByMd5(userInfo.getUserId());
+              } catch (NoSuchAlgorithmException e) {
+                  e.printStackTrace();
+              } catch (UnsupportedEncodingException e) {
+                  e.printStackTrace();
+              }
+              jedis.set(token, JSON.toJSONString(userInfo));
               userInfo.setUserPassword(null);
               return new Result(200,"success",userInfo);
           }else {
