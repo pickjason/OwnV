@@ -2,8 +2,10 @@ package com.wzz.ownv.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.wzz.ownv.common.constant.Constant;
 import com.wzz.ownv.common.exception.CommonException;
 import com.wzz.ownv.common.result.Result;
+import com.wzz.ownv.common.utils.JwtUtils;
 import com.wzz.ownv.common.utils.Md5Util;
 import com.wzz.ownv.common.utils.RedisUtil;
 import com.wzz.ownv.dao.UserDto;
@@ -15,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.UnsupportedEncodingException;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -35,7 +36,7 @@ public class UserInfoController {
     private IUserInfoService  iUserInfoService;
 
    @PostMapping("/login")
-    public Result login(@RequestBody UserDto userDto, HttpServletResponse httpServletResponse){
+    public Result login(@RequestBody UserDto userDto){
        boolean pass=false;
        UserInfo userInfo=null;
        Jedis jedis = RedisUtil.getJedis();
@@ -57,15 +58,8 @@ public class UserInfoController {
           }
           if (pass){
               String token =null;
-              try {
-                  token = Md5Util.EncoderByMd5(userInfo.getUserId());
-              } catch (NoSuchAlgorithmException e) {
-                  e.printStackTrace();
-              } catch (UnsupportedEncodingException e) {
-                  e.printStackTrace();
-              }
-              jedis.set(token, JSON.toJSONString(userInfo));
-              userInfo.setUserPassword(null);
+              token = JwtUtils.createJWT(userInfo.getUserAccount(), userInfo.getUserId(), Constant.JWT_TTL);
+              userInfo.setUserPassword(token);
               return new Result(200,"success",userInfo);
           }else {
               return new Result(202,"failed check you account and password",null);
