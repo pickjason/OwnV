@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Login/Registration</title>
- <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+ <script src="js/jquery-3.5.1.min.js"></script>
   <link rel='stylesheet prefetch' href='http://fonts.googleapis.com/css?family=Open+Sans'>
 
       <link rel="stylesheet" href="css/style.css">
@@ -76,7 +76,7 @@
 		}
 		$.ajax({
            type: "POST",
-           url: "http://10.1.240.34:9797/ownv/user/login",
+           url: "http://193363t4s1.51mypc.cn:13068/ownv/user/login",
            contentType: "application/json; charset=utf-8",
            data: JSON.stringify(json), /*传给后端的数据格式json*/
            dataType: "json",
@@ -120,7 +120,7 @@
           }
           $.ajax({
             type: "POST",
-            url: "http://10.1.240.34:9797/ownv/user/register",
+            url: "http://193363t4s1.51mypc.cn:13068/ownv/user/register",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(res), /*传给后端的数据格式json*/
             dataType: "json",

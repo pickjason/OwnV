@@ -16,4 +16,6 @@ spring:
 mybatis:
   config-location: classpath:mybatis-config.xml
   mapper-locations: classpath:mapper/*.xml
+wzz:
+  scan-path: com.wzz.ownv.controller
 

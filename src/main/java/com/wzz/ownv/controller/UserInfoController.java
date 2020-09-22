@@ -2,6 +2,7 @@ package com.wzz.ownv.controller;
 
 
 import com.alibaba.fastjson.JSON;
+import com.wzz.ownv.annotation.OperationLog;
 import com.wzz.ownv.common.constant.Constant;
 import com.wzz.ownv.common.exception.CommonException;
 import com.wzz.ownv.common.result.Result;
@@ -104,7 +105,7 @@ public class UserInfoController {
        }
        return new Result(200,"success",null);
    }
-
+   @OperationLog
    @GetMapping("/sendMessage")
     public Result sendMessage(@RequestParam("phone") String phone){
        Jedis jedis = RedisUtil.getJedis();
